@@ -15,6 +15,12 @@
         state=present
         update_cache=yes
 
+    - name: add ansible apt repository
+      apt_repository: >
+        repo="ppa:ansible/ansible"
+        state=present
+        update_cache=yes
+
     - name: install docker and requirements
       apt: >
         pkg={{item}}
@@ -22,6 +28,7 @@
       with_items:
         - apparmor
         - docker-engine
+        - ansible
 
     - name: configure docker
       copy: content='DOCKER_OPTS=""'
@@ -38,7 +45,7 @@
     # As of ansible v1.9.1, the docker module uses an older version of the docker-py python package.
     # https://github.com/ansible/ansible-modules-core/issues/1227
     - name: install the version of docker-py used by ansible
-      pip: name=docker-py version=1.7.0
+      pip: name=docker-py 
 
   handlers:
     # I can't use the service module because of an issue with ansible and upstart :(
